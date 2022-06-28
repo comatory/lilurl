@@ -13,37 +13,38 @@ const produceNextURI = (
 }
 
 /** builder function */
-export const urinator = (): Builder => {
-  let base: URI = {
+export const urinator = (base: Partial<URI> = {}): Builder => {
+  let uri: URI = {
     scheme: '',
     hostname: '',
     pathname: '',
     port: null,
     query: '',
+    ...base,
   }
 
   const builder: Builder = {
     scheme: (value: string) => {
-      base = produceNextURI(base, 'scheme', value)
+      uri = produceNextURI(uri, 'scheme', value)
       return builder
     },
     hostname: (value: string) => {
-      base = produceNextURI(base, 'hostname', value)
+      uri = produceNextURI(uri, 'hostname', value)
       return builder
     },
     paths: (values: string[]) => {
-      base = produceNextURI(base, 'pathname', joinPaths(values))
+      uri = produceNextURI(uri, 'pathname', joinPaths(values))
       return builder
     },
     parameters: (values: Record<string, string>) => {
-      base = produceNextURI(base, 'query', createParameterString(values))
+      uri = produceNextURI(uri, 'query', createParameterString(values))
       return builder
     },
     port: (value: number) => {
-      base = produceNextURI(base, 'port', value)
+      uri = produceNextURI(uri, 'port', value)
       return builder
     },
-    build: () => buildURIString(base),
+    build: () => buildURIString(uri),
   }
 
   return builder
