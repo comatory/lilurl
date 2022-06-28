@@ -1,0 +1,26 @@
+{
+  "name": "urinator",
+  "version": "0.1.0",
+  "description": "Utility for building URIs.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comatory/urinator.git"
+  },
+  "keywords": [
+    "builder",
+    "URI",
+    "URL",
+    "utility",
+    "no-dependencies"
+  ],
+  "author": "Ondřej Synáček <ondrej@synacek.org>",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/comatory/urinator/issues"
+  },
+  "homepage": "https://github.com/comatory/urinator#readme"
+}
