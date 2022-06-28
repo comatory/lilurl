@@ -4,6 +4,7 @@
   "description": "Utility for building URIs.",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc src/**/*",
     "test": "test"
   },
   "repository": {
@@ -22,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/comatory/urinator/issues"
   },
-  "homepage": "https://github.com/comatory/urinator#readme"
+  "homepage": "https://github.com/comatory/urinator#readme",
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
 }
