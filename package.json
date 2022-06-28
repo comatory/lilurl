@@ -4,7 +4,7 @@
   "description": "Utility for building URIs.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc src/**/*",
+    "build": "tsc",
     "test": "test"
   },
   "repository": {
