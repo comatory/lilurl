@@ -45,6 +45,7 @@ export const urinator = (base: Partial<URI> = {}): Builder => {
       return builder
     },
     build: () => buildURIString(uri),
+    toString: () => buildURIString(uri),
   }
 
   return builder
