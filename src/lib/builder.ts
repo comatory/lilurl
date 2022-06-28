@@ -12,8 +12,8 @@ const produceNextURI = (
   }
 }
 
-/** alias to `urinator` for NSFW usage */
-export const urntr = (): Builder => {
+/** builder function */
+export const urinator = (): Builder => {
   let base: URI = {
     scheme: '',
     hostname: '',
@@ -49,5 +49,5 @@ export const urntr = (): Builder => {
   return builder
 }
 
-/** builder function */
-export const urinator = urntr
+/** alias to `urinator` for NSFW usage */
+export const urntr = urinator
