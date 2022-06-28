@@ -25,3 +25,6 @@ export interface Builder {
   toString: () => string;
 }
 
+export interface Stringifiable {
+  toString: () => string;
+}
