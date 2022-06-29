@@ -61,28 +61,78 @@ const sanitize = (value: string, ...sanitizers: ((value: string) => string)[]): 
   }, value)
 }
 
-const extractTemplateKeys = (template: string): string[] => {
-  return template
-    .split(PATH_SEPARATOR)
+const splitTemplateToParts = (template: string): string[] => (
+  template.split(PATH_SEPARATOR)
+)
+
+const extractTemplateKeys = (parts: string[]): string[] => (
+  parts
+    .filter(hasColon)
     .map((value) => sanitize(value, sanitizeSlash, sanitizeColon))
     .filter((value) => value.length > 0)
-}
+)
 
-const extractPathPartsWithoutTemplate = (template: string): string[] => {
-  return template
-    .split(PATH_SEPARATOR)
+const extractPathPartsWithoutTemplate = (template: string): string[] => (
+  splitTemplateToParts(template)
     .filter((value) => hasColon(value))
     .map((value) => sanitize(value, sanitizeSlash, sanitizeColon))
     .filter((value) => value.length > 0)
-}
+)
+
+const getTemplateKeyFromPart = (
+  part: string,
+  templateKeys: Set<string>
+) : string | null => (
+  templateKeys.has(sanitizeColon(part))
+    ? sanitizeColon(part)
+    : null
+)
 
 export const createPathnameFromTemplate = (
   template: string,
   values: Record<string, unknown>
 ): string => {
-  const templateKeys = new Set(extractTemplateKeys(template))
+  const parts = splitTemplateToParts(template)
+  const templateKeys = new Set(extractTemplateKeys(parts))
+
+  const paths = parts.map((part) => {
+    const templateKey = getTemplateKeyFromPart(
+      part,
+      templateKeys
+    )
+    const value = templateKey ? values[templateKey] : part
+
+    if (value === undefined) {
+      return ''
+    }
+
+    return isStringifiable(value)
+      ? value.toString()
+      : JSON.stringify(value)
+  })
+
+  return joinPaths(paths.filter((path) => path.length > 0))
+}
+
+export const buildURIString = (uri: URI): string => {
+  return [
+    `${uri.scheme.length > 0 ? `${uri.scheme}:${PATH_SEPARATOR}${PATH_SEPARATOR}` : ''}`,
+    `${uri.hostname.length > 0 ? uri.hostname : ''}`,
+    `${uri.port !== null && uri.hostname.length > 0 ? `:${uri.port}` : ''}`,
+    `${uri.pathname.length > 0 ? uri.pathname : ''}`,
+    `${uri.query.length > 0 ? `?${uri.query}` : ''}`,
+  ].join('')
+}
+
+export const buildTemplatedURIString = (uri: URI): string => {
+  const { template, queryValues } = uri
+
+  if (template === null || queryValues === null) {
+    return buildURIString(uri)
+  }
+
   const pathKeys = new Set(extractPathPartsWithoutTemplate(template))
-  const valueKeys = new Set(Object.keys(values))
+  const valueKeys = new Set(Object.keys(queryValues))
 
   const missingKeysInTemplate = new Set(
     [...pathKeys].filter((key) => !valueKeys.has(key))
@@ -94,27 +144,5 @@ export const createPathnameFromTemplate = (
     })
   }
 
-  const paths = Array.from(templateKeys).map((templateKey) => {
-    const value = values[templateKey]
-
-    if (value === undefined) {
-      return templateKey
-    }
-
-    return isStringifiable(value)
-      ? value.toString()
-      : JSON.stringify(value)
-  })
-
-  return joinPaths(paths)
-}
-
-export const buildURIString = (uri: URI): string => {
-  return [
-    `${uri.scheme.length > 0 ? `${uri.scheme}:${PATH_SEPARATOR}${PATH_SEPARATOR}` : ''}`,
-    `${uri.hostname.length > 0 ? uri.hostname : ''}`,
-    `${uri.port !== null && uri.hostname.length > 0 ? `:${uri.port}` : ''}`,
-    `${uri.pathname.length > 0 ? uri.pathname : ''}`,
-    `${uri.query.length > 0 ? `?${uri.query}` : ''}`,
-  ].join('')
+  return buildURIString(uri)
 }

@@ -4,6 +4,7 @@ export interface URI {
   pathname: string;
   port: number | null;
   query: string;
+  queryValues: Record<string, unknown> | null;
   template: string | null;
 }
 

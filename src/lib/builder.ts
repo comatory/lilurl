@@ -3,6 +3,7 @@ import {
   createParameterString,
   createPathnameFromTemplate,
   buildURIString,
+  buildTemplatedURIString,
 } from './utils'
 import { LilurlBuildError } from './errors'
 import type { URI, URIKey, Builder } from './types'
@@ -30,6 +31,7 @@ export const lilurl = (
     port: null,
     query: '',
     template: null,
+    queryValues: null,
     ...base,
   }
 
@@ -89,6 +91,7 @@ export const lilurl = (
         'pathname',
         createPathnameFromTemplate(uri.template, values)
       )
+      uri = produceNextURI(uri, 'queryValues', values)
 
       return builder
     },
@@ -100,8 +103,12 @@ export const lilurl = (
       uri = produceNextURI(uri, 'port', value)
       return builder
     },
-    build: () => buildURIString(uri),
-    toString: () => buildURIString(uri),
+    build: () => uri.template === null
+      ? buildURIString(uri)
+      : buildTemplatedURIString(uri),
+    toString: () => uri.template === null
+      ? buildURIString(uri)
+      : buildTemplatedURIString(uri),
   }
 
   return builder

@@ -124,7 +124,7 @@ describe('builder', () => {
       ).toEqual('https://foo.bar/pages/100/details/comments')
     })
 
-    it('should throw error if calling template when paths were provided', () => {
+    it('should throw error when values for template were not provided', () => {
       expect(
         () => lilurl()
           .scheme('https')

@@ -74,6 +74,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '/pages/1',
         query: 'a=10&b=20',
+        queryValues: null,
         port: null,
         template: null,
       }
@@ -88,6 +89,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '/pages/1',
         query: 'a=10&b=20',
+        queryValues: null,
         port: 8080,
         template: null,
       }
@@ -102,6 +104,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '/pages/1',
         query: 'a=10&b=20',
+        queryValues: null,
         port: null,
         template: null,
       }
@@ -116,6 +119,7 @@ describe('utils', () => {
         hostname: '',
         pathname: '/pages/1',
         query: 'a=10&b=20',
+        queryValues: null,
         port: null,
         template: null,
       }
@@ -131,6 +135,7 @@ describe('utils', () => {
         hostname: '',
         pathname: '/pages/1',
         query: 'a=10&b=20',
+        queryValues: null,
         port: 8080,
         template: null,
       }
@@ -145,6 +150,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '',
         query: 'a=10&b=20',
+        queryValues: null,
         port: null,
         template: null,
       }
@@ -159,6 +165,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '/pages/1',
         query: '',
+        queryValues: null,
         port: null,
         template: null,
       }
@@ -173,6 +180,7 @@ describe('utils', () => {
         hostname: 'mydomain.com',
         pathname: '/site',
         query: '',
+        queryValues: null,
         port: 20,
         template: null,
       }
@@ -192,13 +200,13 @@ describe('utils', () => {
       ).toEqual('/section/100/sub/abcd')
     })
 
-    it('should throw error when value is missing for template', () => {
+    it('should exclude template part when value is not provided', () => {
       expect(
-        () => createPathnameFromTemplate(
+        createPathnameFromTemplate(
           '/section/:id/sub/:name',
           { id: 100 }
         )
-      ).toThrowError(LilurlBuildError)
+      ).toEqual('/section/100/sub')
     })
   })
 })
