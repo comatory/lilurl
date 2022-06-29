@@ -72,13 +72,6 @@ const extractTemplateKeys = (parts: string[]): string[] => (
     .filter((value) => value.length > 0)
 )
 
-const extractPathPartsWithoutTemplate = (template: string): string[] => (
-  splitTemplateToParts(template)
-    .filter((value) => hasColon(value))
-    .map((value) => sanitize(value, sanitizeSlash, sanitizeColon))
-    .filter((value) => value.length > 0)
-)
-
 const getTemplateKeyFromPart = (
   part: string,
   templateKeys: Set<string>
@@ -131,7 +124,7 @@ export const buildTemplatedURIString = (uri: URI): string => {
     return buildURIString(uri)
   }
 
-  const pathKeys = new Set(extractPathPartsWithoutTemplate(template))
+  const pathKeys = new Set(extractTemplateKeys(splitTemplateToParts(template)))
   const valueKeys = new Set(Object.keys(queryValues))
 
   const missingKeysInTemplate = new Set(
