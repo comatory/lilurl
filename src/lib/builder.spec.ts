@@ -1,4 +1,5 @@
 import { urinator } from './builder'
+import { UrinatorBuildError } from './errors'
 
 describe('builder', () => {
   it('should produce URI object with scheme', () => {
@@ -111,6 +112,31 @@ describe('builder', () => {
     })
   })
 
+  describe('with template', () => {
+    it('should build string with filled template values', () => {
+      expect(
+        urinator()
+          .scheme('https')
+          .hostname('foo.bar')
+          .template('/pages/:id/details/:section')
+          .fillIn({ id: 100, section: 'comments' })
+          .build()
+      ).toEqual('https://foo.bar/pages/100/details/comments')
+    })
+
+    it('should throw error if calling template when paths were provided', () => {
+      expect(
+        () => urinator()
+          .scheme('https')
+          .hostname('foo.bar')
+          .paths([ 'pages', 100, 'details', 'comments' ])
+          .template('/pages/:id/details/:section')
+          .fillIn({ id: 100, section: 'comments' })
+          .build()
+      ).toThrowError(UrinatorBuildError)
+    })
+  })
+
   describe('with base configuration', () => {
     it('should build string with configured scheme', () => {
       expect(urinator({ scheme: 'ftp' }).build())
@@ -145,6 +171,40 @@ describe('builder', () => {
     it('should build string with configured query', () => {
       expect(urinator({ query: 'a=1&b=2' }).build())
         .toEqual('?a=1&b=2')
+    })
+
+    it('should build string with configured template', () => {
+      expect(urinator({
+        template: '/pages/:id',
+      }, {
+        id: 10,
+      }).build())
+        .toEqual('/pages/10')
+    })
+
+    it('should build string with overriden template', () => {
+      expect(
+        urinator({
+          template: '/pages/:id',
+        }, {
+          id: 10,
+        })
+        .template('/comments/:id')
+        .build()
+      ).toEqual('/comments/10')
+    })
+
+    it('should build string with overriden template and filled value', () => {
+      expect(
+        urinator({
+          template: '/pages/:id',
+        }, {
+          id: 10,
+        })
+        .template('/comments/:id')
+        .fillIn({ id: 300 })
+        .build()
+      ).toEqual('/comments/300')
     })
   })
 })

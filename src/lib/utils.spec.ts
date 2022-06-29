@@ -1,4 +1,10 @@
-import { joinPaths, createParameterString, buildURIString } from './utils'
+import {
+  joinPaths,
+  createParameterString,
+  createPathnameFromTemplate,
+  buildURIString,
+} from './utils'
+import { UrinatorBuildError } from './errors'
 
 describe('utils', () => {
   describe('joining paths', () => {
@@ -69,6 +75,7 @@ describe('utils', () => {
         pathname: '/pages/1',
         query: 'a=10&b=20',
         port: null,
+        template: null,
       }
 
       expect(buildURIString(uri))
@@ -82,6 +89,7 @@ describe('utils', () => {
         pathname: '/pages/1',
         query: 'a=10&b=20',
         port: 8080,
+        template: null,
       }
 
       expect(buildURIString(uri))
@@ -95,6 +103,7 @@ describe('utils', () => {
         pathname: '/pages/1',
         query: 'a=10&b=20',
         port: null,
+        template: null,
       }
 
       expect(buildURIString(uri))
@@ -108,6 +117,7 @@ describe('utils', () => {
         pathname: '/pages/1',
         query: 'a=10&b=20',
         port: null,
+        template: null,
       }
 
       expect(buildURIString(uri))
@@ -122,6 +132,7 @@ describe('utils', () => {
         pathname: '/pages/1',
         query: 'a=10&b=20',
         port: 8080,
+        template: null,
       }
 
       expect(buildURIString(uri))
@@ -135,6 +146,7 @@ describe('utils', () => {
         pathname: '',
         query: 'a=10&b=20',
         port: null,
+        template: null,
       }
 
       expect(buildURIString(uri))
@@ -148,6 +160,7 @@ describe('utils', () => {
         pathname: '/pages/1',
         query: '',
         port: null,
+        template: null,
       }
 
       expect(buildURIString(uri))
@@ -161,10 +174,31 @@ describe('utils', () => {
         pathname: '/site',
         query: '',
         port: 20,
+        template: null,
       }
 
       expect(buildURIString(uri))
         .toEqual('ftp://mydomain.com:20/site')
+    })
+  })
+
+  describe('template', () => {
+    it('should create pathname from template with filled values', () => {
+      expect(
+        createPathnameFromTemplate(
+          '/section/:id/sub/:name',
+          { id: 100, name: 'abcd' }
+        )
+      ).toEqual('/section/100/sub/abcd')
+    })
+
+    it('should throw error when value is missing for template', () => {
+      expect(
+        () => createPathnameFromTemplate(
+          '/section/:id/sub/:name',
+          { id: 100 }
+        )
+      ).toThrowError(UrinatorBuildError)
     })
   })
 })

@@ -1,4 +1,5 @@
 import { URI, Stringifiable } from './types'
+import { UrinatorBuildError } from './errors'
 
 const PATH_SEPARATOR = '/'
 
@@ -46,6 +47,66 @@ export const createParameterString = (
 ): string => {
   const params = new URLSearchParams(createStringifiedParameters(values))
   return params.toString()
+}
+
+const sanitizeColon = (value: string) => value.replace(':', '')
+
+const hasColon = (value: string): boolean => /^:/.test(value)
+
+const sanitizeSlash = (value: string) => value.replace(/PATH_SEPARATOR/g, '')
+
+const sanitize = (value: string, ...sanitizers: ((value: string) => string)[]): string => {
+  return sanitizers.reduce((out, fn) => {
+    return fn(out)
+  }, value)
+}
+
+const extractTemplateKeys = (template: string): string[] => {
+  return template
+    .split(PATH_SEPARATOR)
+    .map((value) => sanitize(value, sanitizeSlash, sanitizeColon))
+    .filter((value) => value.length > 0)
+}
+
+const extractPathPartsWithoutTemplate = (template: string): string[] => {
+  return template
+    .split(PATH_SEPARATOR)
+    .filter((value) => hasColon(value))
+    .map((value) => sanitize(value, sanitizeSlash, sanitizeColon))
+    .filter((value) => value.length > 0)
+}
+
+export const createPathnameFromTemplate = (
+  template: string,
+  values: Record<string, unknown>
+): string => {
+  const templateKeys = new Set(extractTemplateKeys(template))
+  const pathKeys = new Set(extractPathPartsWithoutTemplate(template))
+  const valueKeys = new Set(Object.keys(values))
+
+  const missingKeysInTemplate = new Set(
+    [...pathKeys].filter((key) => !valueKeys.has(key))
+  )
+
+  if (missingKeysInTemplate.size > 0) {
+    missingKeysInTemplate.forEach((missingKey) => {
+      throw UrinatorBuildError.fillValue(missingKey)
+    })
+  }
+
+  const paths = Array.from(templateKeys).map((templateKey) => {
+    const value = values[templateKey]
+
+    if (value === undefined) {
+      return templateKey
+    }
+
+    return isStringifiable(value)
+      ? value.toString()
+      : JSON.stringify(value)
+  })
+
+  return joinPaths(paths)
 }
 
 export const buildURIString = (uri: URI): string => {

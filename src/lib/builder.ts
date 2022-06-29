@@ -1,4 +1,10 @@
-import { joinPaths, createParameterString, buildURIString } from './utils'
+import {
+  joinPaths,
+  createParameterString,
+  createPathnameFromTemplate,
+  buildURIString,
+} from './utils'
+import { UrinatorBuildError } from './errors'
 import type { URI, URIKey, Builder } from './types'
 
 const produceNextURI = (
@@ -13,14 +19,29 @@ const produceNextURI = (
 }
 
 /** builder function */
-export const urinator = (base: Partial<URI> = {}): Builder => {
+export const urinator = (
+  base: Partial<URI> = {},
+  templateValues?: Record<string, unknown>
+): Builder => {
   let uri: URI = {
     scheme: '',
     hostname: '',
     pathname: '',
     port: null,
     query: '',
+    template: null,
     ...base,
+  }
+
+  let usedPaths = false
+  let usedTemplate = false
+
+  if (templateValues && uri.template !== null) {
+    usedTemplate = true
+    uri = produceNextURI(uri, 'pathname', createPathnameFromTemplate(
+      uri.template,
+      templateValues,
+    ))
   }
 
   const builder: Builder = {
@@ -33,7 +54,42 @@ export const urinator = (base: Partial<URI> = {}): Builder => {
       return builder
     },
     paths: (values: ((string|number)[]) | string) => {
+      if (usedTemplate) {
+        throw UrinatorBuildError.path()
+      }
+
       uri = produceNextURI(uri, 'pathname', joinPaths(values))
+      usedPaths = true
+      return builder
+    },
+    template: (value: string) => {
+      if (usedPaths) {
+        throw UrinatorBuildError.templatePath()
+      }
+
+      uri = produceNextURI(uri, 'template', value)
+      usedTemplate = true
+
+      if (uri.template !== null && templateValues) {
+        uri = produceNextURI(uri, 'pathname', createPathnameFromTemplate(
+          uri.template,
+          templateValues,
+        ))
+      }
+
+      return builder
+    },
+    fillIn: (values: Record<string, unknown>) => {
+      if (!uri.template) {
+        throw UrinatorBuildError.fill()
+      }
+
+      uri = produceNextURI(
+        uri,
+        'pathname',
+        createPathnameFromTemplate(uri.template, values)
+      )
+
       return builder
     },
     parameters: (values: Record<string, unknown>) => {
