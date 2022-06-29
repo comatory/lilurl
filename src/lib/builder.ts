@@ -20,19 +20,23 @@ const produceNextURI = (
   }
 }
 
+const DEFAULT_URI: URI = Object.freeze({
+  scheme: '',
+  hostname: '',
+  pathname: '',
+  port: null,
+  query: '',
+  template: null,
+  queryValues: null,
+})
+
 /** builder function */
 export const lilurl = (
   base: Partial<URI> = {},
   templateValues?: Record<string, unknown>
 ): Builder => {
   let uri: URI = {
-    scheme: '',
-    hostname: '',
-    pathname: '',
-    port: null,
-    query: '',
-    template: null,
-    queryValues: null,
+    ...DEFAULT_URI,
     ...base,
   }
 

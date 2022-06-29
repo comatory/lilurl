@@ -248,4 +248,26 @@ describe('builder', () => {
       ).toEqual('/comments/300/section/comments')
     })
   })
+
+  describe('integration', () => {
+    it.skip('should build string for API roots', () => {
+      const apiRoot = lilurl({
+        scheme: 'https',
+        hostname: 'api.company.com',
+      })
+
+      const resourceRoot = apiRoot.template('/books/:id')
+
+      expect(
+        resourceRoot.fill('id', 100).build()
+      ).toEqual('https://api.company.com/books/100')
+
+      expect(
+        resourceRoot
+          .fill('id', 999)
+          .parameters({ s: 'moby dick' })
+          .build()
+      ).toEqual('https://api.company.com/books/999?s=moby+dick')
+    })
+  })
 })
