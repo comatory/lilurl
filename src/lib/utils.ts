@@ -2,11 +2,21 @@ import { URI, Stringifiable } from './types'
 
 const PATH_SEPARATOR = '/'
 
-export const joinPaths = (paths: string[]): string => (
-  paths.reduce((out, path) => {
-    return `${out}${PATH_SEPARATOR}${path}`
+export const joinPaths = (
+  paths: ((string|number)[] | string)
+): string => {
+  if (typeof paths === 'string') {
+    return `${PATH_SEPARATOR}${paths}`
+  }
+
+  return paths.reduce((out: string, path: string | number) => {
+    const stringifiedPath = typeof path === 'number'
+      ? String(path)
+      : path
+
+    return `${out}${PATH_SEPARATOR}${stringifiedPath}`
   }, '')
-)
+}
 
 const isStringifiable = (value: unknown): value is Stringifiable => {
   if (value === undefined || value === null) {

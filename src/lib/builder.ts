@@ -32,11 +32,11 @@ export const urinator = (base: Partial<URI> = {}): Builder => {
       uri = produceNextURI(uri, 'hostname', value)
       return builder
     },
-    paths: (values: string[]) => {
+    paths: (values: ((string|number)[]) | string) => {
       uri = produceNextURI(uri, 'pathname', joinPaths(values))
       return builder
     },
-    parameters: (values: Record<string, string>) => {
+    parameters: (values: Record<string, unknown>) => {
       uri = produceNextURI(uri, 'query', createParameterString(values))
       return builder
     },

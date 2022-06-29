@@ -14,9 +14,9 @@ export interface Builder {
   /** set hostname, e.g. domain: `example.com` */
   hostname: (value: string) => Builder;
   /** provide array of paths following the `hostname` */
-  paths: (values: string[]) => Builder;
+  paths: (values: ((string|number)[]) | string) => Builder;
   /** provide object which is transformed to query parameters */
-  parameters: (values: Record<string, string>) => Builder;
+  parameters: (values: Record<string, unknown>) => Builder;
   /** provide port */
   port: (value: number) => Builder;
   /** produce URI string */
