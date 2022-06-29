@@ -1,6 +1,8 @@
 import { urntr, urinator } from './lib/builder'
 
-export type { URI, Builder } from './lib/types'
+export * from './lib/types'
+export { UrinatorBuildError, URINATOR_BUILD_ERROR_CODES } from './lib/errors'
+
 export {
   urntr,
   urinator,
