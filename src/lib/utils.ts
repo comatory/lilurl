@@ -1,5 +1,5 @@
 import { URI, Stringifiable } from './types'
-import { UrinatorBuildError } from './errors'
+import { LilurlBuildError } from './errors'
 
 const PATH_SEPARATOR = '/'
 
@@ -90,7 +90,7 @@ export const createPathnameFromTemplate = (
 
   if (missingKeysInTemplate.size > 0) {
     missingKeysInTemplate.forEach((missingKey) => {
-      throw UrinatorBuildError.fillValue(missingKey)
+      throw LilurlBuildError.fillValue(missingKey)
     })
   }
 

@@ -1,5 +1,5 @@
 {
-  "name": "urinator",
+  "name": "lilurl",
   "version": "0.1.0",
   "description": "Utility for building URIs.",
   "main": "dist/index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/comatory/urinator.git"
+    "url": "git+https://github.com/comatory/lilurl.git"
   },
   "keywords": [
     "builder",
@@ -21,9 +21,9 @@
   "author": "Ondřej Synáček <ondrej@synacek.org>",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/comatory/urinator/issues"
+    "url": "https://github.com/comatory/lilurl/issues"
   },
-  "homepage": "https://github.com/comatory/urinator#readme",
+  "homepage": "https://github.com/comatory/lilurl#readme",
   "devDependencies": {
     "@types/jest": "^28.1.3",
     "jest": "^28.1.1",

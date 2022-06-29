@@ -47,4 +47,4 @@ type BuildErrorCodeKeys = (
   | 'FILL_NON_EXISTENT_TEMPLATE_ERROR_CODE'
 )
 
-export type UrinatorBuildErrorCodes = Record<BuildErrorCodeKeys, number>
+export type LilurlBuildErrorCodes = Record<BuildErrorCodeKeys, number>

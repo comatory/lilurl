@@ -4,7 +4,7 @@ import {
   createPathnameFromTemplate,
   buildURIString,
 } from './utils'
-import { UrinatorBuildError } from './errors'
+import { LilurlBuildError } from './errors'
 
 describe('utils', () => {
   describe('joining paths', () => {
@@ -198,7 +198,7 @@ describe('utils', () => {
           '/section/:id/sub/:name',
           { id: 100 }
         )
-      ).toThrowError(UrinatorBuildError)
+      ).toThrowError(LilurlBuildError)
     })
   })
 })

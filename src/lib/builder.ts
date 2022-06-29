@@ -4,7 +4,7 @@ import {
   createPathnameFromTemplate,
   buildURIString,
 } from './utils'
-import { UrinatorBuildError } from './errors'
+import { LilurlBuildError } from './errors'
 import type { URI, URIKey, Builder } from './types'
 
 const produceNextURI = (
@@ -19,7 +19,7 @@ const produceNextURI = (
 }
 
 /** builder function */
-export const urinator = (
+export const lilurl = (
   base: Partial<URI> = {},
   templateValues?: Record<string, unknown>
 ): Builder => {
@@ -55,7 +55,7 @@ export const urinator = (
     },
     paths: (values: ((string|number)[]) | string) => {
       if (usedTemplate) {
-        throw UrinatorBuildError.path()
+        throw LilurlBuildError.path()
       }
 
       uri = produceNextURI(uri, 'pathname', joinPaths(values))
@@ -64,7 +64,7 @@ export const urinator = (
     },
     template: (value: string) => {
       if (usedPaths) {
-        throw UrinatorBuildError.templatePath()
+        throw LilurlBuildError.templatePath()
       }
 
       uri = produceNextURI(uri, 'template', value)
@@ -81,7 +81,7 @@ export const urinator = (
     },
     fillIn: (values: Record<string, unknown>) => {
       if (!uri.template) {
-        throw UrinatorBuildError.fill()
+        throw LilurlBuildError.fill()
       }
 
       uri = produceNextURI(
@@ -106,6 +106,3 @@ export const urinator = (
 
   return builder
 }
-
-/** alias to `urinator` for NSFW usage */
-export const urntr = urinator
