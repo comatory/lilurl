@@ -5,7 +5,6 @@ import {
   createPartialPathnameFromTemplate,
   buildURIString,
 } from './utils'
-import { LilurlBuildError } from './errors'
 
 describe('utils', () => {
   describe('joining paths', () => {
