@@ -2,6 +2,7 @@ import {
   joinPaths,
   createParameterString,
   createPathnameFromTemplate,
+  createPartialPathnameFromTemplate,
   buildURIString,
   buildTemplatedURIString,
 } from './utils'
@@ -78,6 +79,30 @@ export const lilurl = (
           templateValues,
         ))
       }
+
+      return builder
+    },
+    fill: (key: string, value: unknown) => {
+      if (!uri.template) {
+        throw LilurlBuildError.fill()
+      }
+
+      uri = produceNextURI(
+        uri,
+        'pathname',
+        createPartialPathnameFromTemplate(
+          uri.pathname.length > 0
+            ? uri.pathname
+            : uri.template,
+          key,
+          value
+        )
+      )
+      uri = produceNextURI(
+        uri,
+        'queryValues',
+        { ...uri.queryValues, [key]: value }
+      )
 
       return builder
     },

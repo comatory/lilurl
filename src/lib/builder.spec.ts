@@ -135,6 +135,32 @@ describe('builder', () => {
           .build()
       ).toThrowError(LilurlBuildError)
     })
+
+    it('should gradually apply template values with `fill`', () => {
+      expect(
+        lilurl()
+          .scheme('https')
+          .hostname('foo.bar')
+          .template('/pages/:id/details/:section/:section_id')
+          .fill('id', 100)
+          .fill('section', 'comments')
+          .fill('section_id', 'highlights')
+          .build()
+      ).toEqual('https://foo.bar/pages/100/details/comments/highlights')
+    })
+
+    it('should throw error when gradually applying template and ' +
+       'values for template were not provided', () => {
+      expect(
+        () => lilurl()
+          .scheme('https')
+          .hostname('foo.bar')
+          .template('/pages/:id/details/:section/:section_id')
+          .fill('id', 100)
+          .fill('section', 'comments')
+          .build()
+      ).toThrowError(LilurlBuildError)
+    })
   })
 
   describe('with base configuration', () => {
@@ -205,6 +231,21 @@ describe('builder', () => {
         .fillIn({ id: 300 })
         .build()
       ).toEqual('/comments/300')
+    })
+
+    it.skip('should build string with overriden template and ' +
+       'gradually filled value', () => {
+      expect(
+        lilurl({
+          template: '/pages/:id',
+        }, {
+          id: 10,
+        })
+        .template('/comments/:id/section/:name')
+        .fill('id', 300)
+        .fill('name', 'comments')
+        .build()
+      ).toEqual('/comments/300/section/comments')
     })
   })
 })

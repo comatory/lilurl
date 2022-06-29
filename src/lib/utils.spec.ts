@@ -2,6 +2,7 @@ import {
   joinPaths,
   createParameterString,
   createPathnameFromTemplate,
+  createPartialPathnameFromTemplate,
   buildURIString,
 } from './utils'
 import { LilurlBuildError } from './errors'
@@ -207,6 +208,16 @@ describe('utils', () => {
           { id: 100 }
         )
       ).toEqual('/section/100/sub')
+    })
+
+    it('should partially fill in template', () => {
+      expect(
+        createPartialPathnameFromTemplate(
+          '/section/:id/sub/:name',
+          'id',
+          100
+        )
+      ).toEqual('/section/100/sub/:name')
     })
   })
 })

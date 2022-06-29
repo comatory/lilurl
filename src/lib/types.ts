@@ -27,6 +27,8 @@ export interface Builder {
   template: (value: string) => Builder;
   /** provide object which is transformed to query parameters */
   parameters: (values: Record<string, unknown>) => Builder;
+  /** fill single value for `template` */
+  fill: (key: string, value: unknown) => Builder;
   /** fills in values for `template` */
   fillIn: (values: Record<string, unknown>) => Builder
   /** provide port */

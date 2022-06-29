@@ -107,6 +107,26 @@ export const createPathnameFromTemplate = (
   return joinPaths(paths.filter((path) => path.length > 0))
 }
 
+export const createPartialPathnameFromTemplate = (
+  template: string,
+  key: string,
+  value: unknown
+): string => {
+  const parts = splitTemplateToParts(template)
+
+  const paths = parts.map((part) => {
+    if (sanitize(part, sanitizeColon, sanitizeSlash) !== key) {
+      return part
+    }
+
+    return isStringifiable(value)
+      ? value.toString()
+      : JSON.stringify(value)
+  })
+
+  return joinPaths(paths.filter((path) => path.length > 0))
+}
+
 export const buildURIString = (uri: URI): string => {
   return [
     `${uri.scheme.length > 0 ? `${uri.scheme}:${PATH_SEPARATOR}${PATH_SEPARATOR}` : ''}`,
