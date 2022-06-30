@@ -2,7 +2,6 @@ import {
   joinPaths,
   createParameterString,
   createPathnameFromTemplate,
-  createPartialPathnameFromTemplate,
   buildURIString,
   buildTemplatedURIString,
 } from './utils'
@@ -27,7 +26,7 @@ const DEFAULT_URI: URI = Object.freeze({
   port: null,
   query: '',
   template: null,
-  queryValues: null,
+  templateValues: null,
 })
 
 /** builder function */
@@ -93,19 +92,8 @@ export const lilurl = (
 
       uri = produceNextURI(
         uri,
-        'pathname',
-        createPartialPathnameFromTemplate(
-          uri.pathname.length > 0
-            ? uri.pathname
-            : uri.template,
-          key,
-          value
-        )
-      )
-      uri = produceNextURI(
-        uri,
-        'queryValues',
-        { ...uri.queryValues, [key]: value }
+        'templateValues',
+        [ ...(uri.templateValues ?? []), { key, value } ]
       )
 
       return builder
@@ -115,12 +103,8 @@ export const lilurl = (
         throw LilurlBuildError.fill()
       }
 
-      uri = produceNextURI(
-        uri,
-        'pathname',
-        createPathnameFromTemplate(uri.template, values)
-      )
-      uri = produceNextURI(uri, 'queryValues', values)
+      const templateValues = Object.keys(values).map((key) => ({ key, value: values[key] }))
+      uri = produceNextURI(uri, 'templateValues', templateValues)
 
       return builder
     },

@@ -2,7 +2,6 @@ import {
   joinPaths,
   createParameterString,
   createPathnameFromTemplate,
-  createPartialPathnameFromTemplate,
   buildURIString,
 } from './utils'
 
@@ -74,7 +73,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '/pages/1',
         query: 'a=10&b=20',
-        queryValues: null,
+        templateValues: null,
         port: null,
         template: null,
       }
@@ -89,7 +88,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '/pages/1',
         query: 'a=10&b=20',
-        queryValues: null,
+        templateValues: null,
         port: 8080,
         template: null,
       }
@@ -104,7 +103,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '/pages/1',
         query: 'a=10&b=20',
-        queryValues: null,
+        templateValues: null,
         port: null,
         template: null,
       }
@@ -119,7 +118,7 @@ describe('utils', () => {
         hostname: '',
         pathname: '/pages/1',
         query: 'a=10&b=20',
-        queryValues: null,
+        templateValues: null,
         port: null,
         template: null,
       }
@@ -135,7 +134,7 @@ describe('utils', () => {
         hostname: '',
         pathname: '/pages/1',
         query: 'a=10&b=20',
-        queryValues: null,
+        templateValues: null,
         port: 8080,
         template: null,
       }
@@ -150,7 +149,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '',
         query: 'a=10&b=20',
-        queryValues: null,
+        templateValues: null,
         port: null,
         template: null,
       }
@@ -165,7 +164,7 @@ describe('utils', () => {
         hostname: 'google.com',
         pathname: '/pages/1',
         query: '',
-        queryValues: null,
+        templateValues: null,
         port: null,
         template: null,
       }
@@ -180,7 +179,7 @@ describe('utils', () => {
         hostname: 'mydomain.com',
         pathname: '/site',
         query: '',
-        queryValues: null,
+        templateValues: null,
         port: 20,
         template: null,
       }
@@ -207,16 +206,6 @@ describe('utils', () => {
           { id: 100 }
         )
       ).toEqual('/section/100/sub')
-    })
-
-    it('should partially fill in template', () => {
-      expect(
-        createPartialPathnameFromTemplate(
-          '/section/:id/sub/:name',
-          'id',
-          100
-        )
-      ).toEqual('/section/100/sub/:name')
     })
   })
 })

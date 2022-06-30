@@ -4,8 +4,8 @@ export interface URI {
   pathname: string;
   port: number | null;
   query: string;
-  queryValues: Record<string, unknown> | null;
   template: string | null;
+  templateValues: { key: string; value: unknown }[] | null;
 }
 
 export type URIKey = keyof URI;

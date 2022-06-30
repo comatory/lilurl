@@ -61,8 +61,8 @@ const sanitize = (value: string, ...sanitizers: ((value: string) => string)[]): 
   }, value)
 }
 
-const splitTemplateToParts = (template: string): string[] => (
-  template.split(PATH_SEPARATOR)
+const splitBySeparator = (value: string): string[] => (
+  value.split(PATH_SEPARATOR)
 )
 
 const extractTemplateKeys = (parts: string[]): string[] => (
@@ -85,7 +85,7 @@ export const createPathnameFromTemplate = (
   template: string,
   values: Record<string, unknown>
 ): string => {
-  const parts = splitTemplateToParts(template)
+  const parts = splitBySeparator(template)
   const templateKeys = new Set(extractTemplateKeys(parts))
 
   const paths = parts.map((part) => {
@@ -107,26 +107,6 @@ export const createPathnameFromTemplate = (
   return joinPaths(paths.filter((path) => path.length > 0))
 }
 
-export const createPartialPathnameFromTemplate = (
-  template: string,
-  key: string,
-  value: unknown
-): string => {
-  const parts = splitTemplateToParts(template)
-
-  const paths = parts.map((part) => {
-    if (sanitize(part, sanitizeColon, sanitizeSlash) !== key) {
-      return part
-    }
-
-    return isStringifiable(value)
-      ? value.toString()
-      : JSON.stringify(value)
-  })
-
-  return joinPaths(paths.filter((path) => path.length > 0))
-}
-
 export const buildURIString = (uri: URI): string => {
   return [
     `${uri.scheme.length > 0 ? `${uri.scheme}:${PATH_SEPARATOR}${PATH_SEPARATOR}` : ''}`,
@@ -137,15 +117,23 @@ export const buildURIString = (uri: URI): string => {
   ].join('')
 }
 
-export const buildTemplatedURIString = (uri: URI): string => {
-  const { template, queryValues } = uri
+const createPartialPathnameFromTemplate = (
+  template: string,
+  key: string,
+  value: unknown
+): string => {
+  return template.replace(`:${key}`, isStringifiable(value) ? value.toString() : JSON.stringify(value))
+}
 
-  if (template === null || queryValues === null) {
+export const buildTemplatedURIString = (uri: URI): string => {
+  const { template, templateValues } = uri
+
+  if (template === null || templateValues === null) {
     return buildURIString(uri)
   }
 
-  const pathKeys = new Set(extractTemplateKeys(splitTemplateToParts(template)))
-  const valueKeys = new Set(Object.keys(queryValues))
+  const pathKeys = new Set(extractTemplateKeys(splitBySeparator(template)))
+  const valueKeys = new Set(templateValues.map(({ key }) => key))
 
   const missingKeysInTemplate = new Set(
     [...pathKeys].filter((key) => !valueKeys.has(key))
@@ -157,5 +145,26 @@ export const buildTemplatedURIString = (uri: URI): string => {
     })
   }
 
-  return buildURIString(uri)
+  const uriWithFilledInValues = splitBySeparator(template).reduce((nextUri, path) => {
+    const pathKey = Array.from(pathKeys).find((key) => `:${key}` === path)
+    const templateValue = templateValues.find(({ key }) => key === pathKey)
+
+    const pathname = templateValue && pathKey
+      ? createPartialPathnameFromTemplate(
+        nextUri.pathname.length > 0
+          ? nextUri.pathname
+          : template,
+        pathKey,
+        templateValue.value
+      )
+      : nextUri.pathname
+      console.log(pathname)
+
+    return {
+      ...nextUri,
+      pathname,
+    }
+  }, uri)
+
+  return buildURIString(uriWithFilledInValues)
 }
