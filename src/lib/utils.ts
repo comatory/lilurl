@@ -1,4 +1,4 @@
-import { URI, Stringifiable } from './types'
+import { URI, Stringifiable, TemplateValue } from './types'
 import { LilurlBuildError } from './errors'
 
 const PATH_SEPARATOR = '/'
@@ -107,6 +107,28 @@ export const createPathnameFromTemplate = (
   return joinPaths(paths.filter((path) => path.length > 0))
 }
 
+export const buildTemplateValues = (
+  values: TemplateValue[],
+  nextValues: TemplateValue[],
+): TemplateValue[] => (
+  nextValues.reduce((out, { key, value }) => {
+    const existingValueIndex = out.findIndex((existingTemplateValue) => existingTemplateValue.key === key)
+
+    if (existingValueIndex === -1) {
+      return [ ...out, { key, value } ]
+    }
+
+    return [
+      ...out.slice(0, existingValueIndex),
+      {
+        key,
+        value,
+      },
+      ...out.slice(existingValueIndex + 1),
+    ]
+  }, [ ...values ])
+)
+
 export const buildURIString = (uri: URI): string => {
   return [
     `${uri.scheme.length > 0 ? `${uri.scheme}:${PATH_SEPARATOR}${PATH_SEPARATOR}` : ''}`,
@@ -158,7 +180,6 @@ export const buildTemplatedURIString = (uri: URI): string => {
         templateValue.value
       )
       : nextUri.pathname
-      console.log(pathname)
 
     return {
       ...nextUri,

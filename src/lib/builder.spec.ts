@@ -149,7 +149,7 @@ describe('builder', () => {
       ).toEqual('https://foo.bar/pages/100/details/comments/highlights')
     })
 
-    it.skip('should gradually apply repeated template values with `fill`', () => {
+    it('should gradually apply repeated template values with `fill`', () => {
       expect(
         lilurl()
           .scheme('https')
@@ -266,7 +266,7 @@ describe('builder', () => {
   })
 
   describe('integration', () => {
-    it.skip('should build string for API roots', () => {
+    it('should build string for API roots', () => {
       const apiRoot = lilurl({
         scheme: 'https',
         hostname: 'api.company.com',

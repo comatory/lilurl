@@ -2,6 +2,7 @@ import {
   joinPaths,
   createParameterString,
   createPathnameFromTemplate,
+  buildTemplateValues,
   buildURIString,
   buildTemplatedURIString,
 } from './utils'
@@ -93,7 +94,10 @@ export const lilurl = (
       uri = produceNextURI(
         uri,
         'templateValues',
-        [ ...(uri.templateValues ?? []), { key, value } ]
+        buildTemplateValues(
+          uri.templateValues ?? [],
+          [ { key, value } ]
+        )
       )
 
       return builder

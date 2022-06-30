@@ -5,7 +5,7 @@ export interface URI {
   port: number | null;
   query: string;
   template: string | null;
-  templateValues: { key: string; value: unknown }[] | null;
+  templateValues: TemplateValue[] | null;
 }
 
 export type URIKey = keyof URI;
@@ -41,6 +41,11 @@ export interface Builder {
 
 export interface Stringifiable {
   toString: () => string;
+}
+
+export interface TemplateValue {
+  key: string;
+  value: unknown;
 }
 
 type BuildErrorCodeKeys = (
