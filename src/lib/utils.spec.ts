@@ -194,7 +194,7 @@ describe('utils', () => {
       expect(
         createPathnameFromTemplate(
           '/section/:id/sub/:name',
-          { id: 100, name: 'abcd' }
+          [ { key: 'id', value: 100 }, { key: 'name', value: 'abcd' } ]
         )
       ).toEqual('/section/100/sub/abcd')
     })
@@ -203,7 +203,7 @@ describe('utils', () => {
       expect(
         createPathnameFromTemplate(
           '/section/:id/sub/:name',
-          { id: 100 }
+          [ { key: 'id', value: 100 } ]
         )
       ).toEqual('/section/100/sub')
     })

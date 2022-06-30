@@ -83,7 +83,7 @@ const getTemplateKeyFromPart = (
 
 export const createPathnameFromTemplate = (
   template: string,
-  values: Record<string, unknown>
+  templateValues: TemplateValue[]
 ): string => {
   const parts = splitBySeparator(template)
   const templateKeys = new Set(extractTemplateKeys(parts))
@@ -93,7 +93,10 @@ export const createPathnameFromTemplate = (
       part,
       templateKeys
     )
-    const value = templateKey ? values[templateKey] : part
+    const templateValue = templateKey
+      ? templateValues.find(({ key }) => key === templateKey)
+      : undefined
+    const value = templateKey ? templateValue?.value : part
 
     if (value === undefined) {
       return ''

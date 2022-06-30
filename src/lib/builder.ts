@@ -33,7 +33,6 @@ const DEFAULT_URI: URI = Object.freeze({
 /** builder function */
 export const lilurl = (
   base: Partial<URI> = {},
-  templateValues?: Record<string, unknown>
 ): Builder => {
   let uri: URI = {
     ...DEFAULT_URI,
@@ -43,11 +42,11 @@ export const lilurl = (
   let usedPaths = false
   let usedTemplate = false
 
-  if (templateValues && uri.template !== null) {
+  if (uri.templateValues && uri.template !== null) {
     usedTemplate = true
     uri = produceNextURI(uri, 'pathname', createPathnameFromTemplate(
       uri.template,
-      templateValues,
+      uri.templateValues,
     ))
   }
 
@@ -77,10 +76,10 @@ export const lilurl = (
       uri = produceNextURI(uri, 'template', value)
       usedTemplate = true
 
-      if (uri.template !== null && templateValues) {
+      if (uri.template !== null && uri.templateValues) {
         uri = produceNextURI(uri, 'pathname', createPathnameFromTemplate(
           uri.template,
-          templateValues,
+          uri.templateValues,
         ))
       }
 
@@ -108,7 +107,14 @@ export const lilurl = (
       }
 
       const templateValues = Object.keys(values).map((key) => ({ key, value: values[key] }))
-      uri = produceNextURI(uri, 'templateValues', templateValues)
+      uri = produceNextURI(
+        uri,
+        'templateValues',
+        buildTemplateValues(
+          uri.templateValues ?? [],
+          templateValues
+        )
+      )
 
       return builder
     },

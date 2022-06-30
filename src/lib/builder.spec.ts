@@ -218,8 +218,7 @@ describe('builder', () => {
     it('should build string with configured template', () => {
       expect(lilurl({
         template: '/pages/:id',
-      }, {
-        id: 10,
+        templateValues: [ { key: 'id', value: 10 } ]
       }).build())
         .toEqual('/pages/10')
     })
@@ -228,8 +227,7 @@ describe('builder', () => {
       expect(
         lilurl({
           template: '/pages/:id',
-        }, {
-          id: 10,
+          templateValues: [ { key: 'id', value: 10 } ]
         })
         .template('/comments/:id')
         .build()
@@ -240,8 +238,7 @@ describe('builder', () => {
       expect(
         lilurl({
           template: '/pages/:id',
-        }, {
-          id: 10,
+          templateValues: [ { key: 'id', value: 10 } ]
         })
         .template('/comments/:id')
         .fillIn({ id: 300 })
@@ -254,8 +251,7 @@ describe('builder', () => {
       expect(
         lilurl({
           template: '/pages/:id',
-        }, {
-          id: 10,
+          templateValues: [ { key: 'id', value: 10 } ]
         })
         .template('/comments/:id/section/:name')
         .fill('id', 300)
